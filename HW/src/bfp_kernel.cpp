@@ -55,9 +55,9 @@ void bfp_kernel(
     unsigned int* out_mant            // BFP mant output
 ) {
     // Todas las s_axilite en el MISMO bundle "control"
-    #pragma HLS INTERFACE s_axilite port=operation bundle=control
-    #pragma HLS INTERFACE s_axilite port=n_blocks  bundle=control
-    #pragma HLS INTERFACE s_axilite port=return    bundle=control
+    #pragma HLS INTERFACE s_axilite port=operation
+    #pragma HLS INTERFACE s_axilite port=n_blocks
+    #pragma HLS INTERFACE s_axilite port=return
 
     // Memorias por AXI (NO s_axilite). Bundles m_axi separados para ancho de banda.
     // A
