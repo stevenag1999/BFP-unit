@@ -3,7 +3,7 @@
 #==============================================================================
 # CONFIGURACION DEL PROYECTO
 #==============================================================================
-open_project -reset bfp_proj
+open_project -reset bfp_proj_fp32
 set_top bfp_kernel
 
 #==============================================================================
@@ -25,7 +25,7 @@ add_files -tb tb_kernel.cc
 #==============================================================================
 open_solution -reset "sol1"
 set_part {xcu55c-fsvh2892-2L-e}
-create_clock -period 4.0 -name default  ;# 250 MHz
+create_clock -period 5.0 -name default  ;# 200 MHz
 
 #==============================================================================
 # CONFIGURACION (mínima, manteniendo tu estilo)
@@ -62,11 +62,9 @@ export_design -format xo -rtl verilog -output bfp_kernel.xo
 puts "\n=========================================="
 puts "HLS Flow Complete!"
 puts "=========================================="
-puts "Project: bfp_proj_opt"
-puts "Reports: bfp_proj_opt/sol1/syn/report/"
-puts "XO     : bfp_proj_opt/sol1/bfp_kernel.xo (y copia local: ./bfp_kernel.xo)"
+puts "Project: bfp_proj"
+puts "Reports: bfp_proj/sol1/syn/report/"
+puts "XO     : bfp_proj/sol1/bfp_kernel.xo (y copia local: ./bfp_kernel.xo)"
 puts "\n"
 
 exit
-
-
