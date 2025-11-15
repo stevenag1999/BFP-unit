@@ -54,7 +54,6 @@ BFP-unit/
 │   └── ...             
 ├── Documentation/       # Documentos de apoyo (memoria, diagramas, notas técnicas)
 │   └── ...             
-├── Makefile             # Makefile principal (HW + SW + targets de prueba)
 └── README.md            # Este archivo
 
 
