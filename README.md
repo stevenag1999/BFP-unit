@@ -83,25 +83,11 @@ BFP-unit/
 
 ---
 
-# Requirements
-
-## Software
-- **Xilinx Vitis 2024.2**
-- **XRT** (Xilinx Runtime)
-- **make** build tool
-- **C++17 compiler** (g++, clang++, or equivalent)
-
-## Hardware
-- **Xilinx Alveo U55C** board with compatible XDMA shell
-- Host machine with **PCIe support** and **XRT drivers** correctly installed
-
----
-
-# Quick Start
+## 5. Quick Start
 
 From the root of the repository:
 
-## 5.1. Set up the environment
+**5.1. Set up the environment**
 
 Adjust these paths to your local installation:
 
@@ -113,7 +99,7 @@ source /tools/Xilinx/Vitis/2024.2/settings64.sh
 source /opt/xilinx/xrt/setup.sh
 ```
 
-## 5.2. Build and run
+**5.2. Build and run**
 
 ```bash
 # Build hardware + software
@@ -130,7 +116,7 @@ make test
 
 ---
 
-# 6. Build Targets
+## 6. Build Targets
 
 Common Makefile targets (names may vary slightly depending on your platform configuration):
 
@@ -148,7 +134,7 @@ Check the top-level Makefile and the `HW/` / `SW/` Makefiles if you need to adju
 
 ---
 
-# 7. Usage and Flow
+## 7. Usage and Flow
 
 At a high level, the dataflow is:
 
@@ -161,7 +147,7 @@ Input (FP32)
 ```
 ---
 
-# 8. Configuration
+## 8. Configuration
 
 Default configuration (can be changed at compile time in the HLS code):
 
@@ -185,7 +171,7 @@ make test
 ```
 ---
 
-# 9. Documentation
+## 9. Documentation
 
 Additional design documentation is stored under `Documentation/`, including:
 
@@ -198,7 +184,7 @@ Additional design documentation is stored under `Documentation/`, including:
 If you add a main PDF/markdown guide (e.g., `Documentation/BFP-Unit-Guide.pdf`), reference it here for detailed explanations of the architecture and build flow.
 ---
 
-# Credits
+## Credits
 
 - **Author:** Steven Arias Gutiérrez
 - **Institution:** Instituto Tecnológico de Costa Rica (TEC) – School of Electronic Engineering
@@ -206,7 +192,7 @@ If you add a main PDF/markdown guide (e.g., `Documentation/BFP-Unit-Guide.pdf`),
 
 If you are interested in collaboration or have questions, feel free to open an issue or a pull request in this repository.
 
-# License 
+## License 
 Block Floating-Point (BFP) Unit
 Copyright (c) 2025 Steven Arias Gutiérrez
 
