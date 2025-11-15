@@ -120,6 +120,40 @@ SimpleBFP encode_fp32_to_bfp(const float* data, unsigned int n) {
     return result;
 }
 
+// Helper to decode BFP element to FP32 (matches HW rebuild_FP32)
+float decode_bfp_to_fp32(uint32_t exp_shared, uint32_t sign, uint32_t mant, uint32_t delta) {
+    const uint32_t mant_max = (1u << (WM + 1)) - 1;
+    const int bias = (1 << (WE - 1)) - 1;  // 15 for WE=5
+    
+    // Detect NaN
+    if (mant == (mant_max - 1) && delta == 0) {
+        union {float f; uint32_t u;} nan_val;
+        nan_val.u = 0x7FC00000;
+        return nan_val.f;
+    }
+    
+    // Detect Infinity
+    if (mant == mant_max && delta == 0) {
+        union {float f; uint32_t u;} inf_val;
+        inf_val.u = sign ? 0xFF800000 : 0x7F800000;
+        return inf_val.f;
+    }
+    
+    // Detect zero
+    if (exp_shared == 0 && mant == 0) return 0.0f;
+    
+    // Reconstruction
+    int exp_shared_unbiased = int(exp_shared) - bias;
+    int exp_real = exp_shared_unbiased - int(delta);
+    
+    uint32_t mant_unshifted = mant << delta;
+    
+    float mant_val = float(mant_unshifted) / float(1u << WM);
+    float value = ldexpf(mant_val, exp_real);
+    
+    return sign ? -value : value;
+}
+
 int main(int argc, char** argv) {
     INIT_PROFILER(bfp_profiler)
     int device_index = 0;
@@ -376,17 +410,42 @@ int main(int argc, char** argv) {
         }
         
     } else {
-        // Arithmetic operations: show BFP result
+        // Arithmetic operations: show BFP result and decode to FP32
         uint32_t exp_out;
         uint32_t sign_out[N], mant_out[N], delta_out[N];
         unpack_compact_to_bfp(bo_out_bfp_map, 0, exp_out, sign_out, mant_out, delta_out);
         
         std::cout << "\nFirst block - " << OP_NAMES[operation] << " result (first 8 elements):" << std::endl;
         std::cout << "  exp_shared: " << exp_out << std::endl;
+        std::cout << std::endl;
+        
+        // Show operation with decoded values
         for (int i = 0; i < 8; ++i) {
-            std::cout << "  [" << i << "] sign: " << sign_out[i]
-                      << ", mant: " << mant_out[i]
-                      << ", delta: " << delta_out[i] << std::endl;
+            float result_fp32 = decode_bfp_to_fp32(exp_out, sign_out[i], mant_out[i], delta_out[i]);
+            
+            std::cout << "  [" << i << "] ";
+            
+            // Show operation in decimal
+            if (operation == OP_RCP) {
+                std::cout << "1 / " << B_fp[i] << " = " << result_fp32;
+            } else {
+                std::cout << A_fp[i];
+                switch(operation) {
+                    case OP_ADD: std::cout << " + "; break;
+                    case OP_SUB: std::cout << " - "; break;
+                    case OP_MUL: std::cout << " * "; break;
+                    case OP_DIV: std::cout << " / "; break;
+                }
+                std::cout << B_fp[i] << " = " << result_fp32;
+            }
+            
+            // Show expected value
+            std::cout << " (expected: " << golden_ref[i] << ")";
+            
+            // Show BFP representation
+            std::cout << " [BFP: sign=" << sign_out[i]
+                      << ", mant=" << mant_out[i]
+                      << ", delta=" << delta_out[i] << "]" << std::endl;
         }
     }
 
