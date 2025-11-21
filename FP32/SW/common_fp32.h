@@ -4,7 +4,7 @@
 #include <cstdint>
 
 // FP32 Configuration - Same block structure
-//#define N 16
+#define N 16
 
 // For consistency with BFP interface
 #define FP32_BLOCK_SIZE N
